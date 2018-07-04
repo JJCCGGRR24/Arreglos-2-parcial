@@ -10,8 +10,7 @@
 	
 	<form:hidden path="id"/>
 	<form:hidden path="version"/>
-	<form:hidden path="tabooWord"/>
-	<form:hidden path="agent"/>
+
 	
 	
 	<acme:select items="${ newspapers}" itemLabel="title" code="template.newspaper" path="newspaper"/>

@@ -12,8 +12,6 @@ package controllers.agent;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -72,8 +70,10 @@ public class AdvertisementAgentController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST, params = "save")
-	public ModelAndView save(@Valid final Advertisement c, final BindingResult binding) {
+	public ModelAndView save(Advertisement c, final BindingResult binding) {
 		ModelAndView modelAndView;
+
+		c = this.advertisementService.reconstruct(c, binding);
 		final String error = this.advertisementService.validate(c);
 		if (binding.hasErrors() || error != null)
 			modelAndView = this.createEditModelAndView(c, error);

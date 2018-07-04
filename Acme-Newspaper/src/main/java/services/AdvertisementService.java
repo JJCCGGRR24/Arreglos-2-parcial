@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 
 import repositories.AdvertisementRepository;
 import security.LoginService;
@@ -36,6 +38,9 @@ public class AdvertisementService {
 
 	@Autowired
 	private NewspaperService		newspaperService;
+
+	@Autowired
+	private Validator				validator;
 
 
 	// Constructors -----------------------------------------------------------
@@ -120,5 +125,28 @@ public class AdvertisementService {
 			}
 		}
 		return b;
+	}
+
+	public Advertisement reconstruct(final Advertisement c, final BindingResult binding) {
+		Advertisement result;
+		Advertisement bd;
+
+		if (c.getId() == 0) {
+			c.setAgent((Agent) this.loginService.getPrincipalActor());
+			c.setTabooWord(false);
+
+			result = c;
+
+		} else {
+			bd = this.advertisementRepository.findOne(c.getId());
+			c.setAgent(bd.getAgent());
+			c.setTabooWord(bd.isTabooWord());
+
+			result = c;
+
+		}
+		this.validator.validate(c, binding);
+
+		return result;
 	}
 }
